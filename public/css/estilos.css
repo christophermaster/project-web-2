@@ -1,0 +1,558 @@
+/*/-----------------
+ESTILO GENERAL
+-------------------
+*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+/*/-----------------
+CREACION DEL MENU
+------------------- */
+
+.menu {
+    position: relative;
+}
+
+.menu nav {
+    display: block;
+    background: #ffffff;
+    overflow: hidden;
+    border-bottom: solid 1px #ccc;
+}
+
+.menu nav>a {
+    text-decoration: none;
+    float: left;
+    color: #676767;
+    padding: 1.2em;
+    transition: background .2s;
+    display: block;
+}
+
+.menu nav>a:hover {
+    color: #f99b2c;
+}
+
+.menu input {
+    display: none
+}
+
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: inherit
+}
+
+h4 {
+    font-size: 1.5rem
+}
+
+h5 {
+    font-size: 1.25rem
+}
+
+h6 {
+    font-size: 1rem
+}
+
+
+/*boton*/
+
+.menu .drop {
+    color: #060606;
+    padding: 1.2em;
+    background: #fff;
+    cursor: pointer;
+    display: none;
+    /*ocultamos el botÃ³n*/
+}
+
+.menu .drop svg {
+    fill: #060606;
+    vertical-align: middle;
+}
+
+header {
+    width: 100%;
+}
+
+
+/*ocultamos el input*/
+
+#toggle:checked~nav {
+    display: block;
+}
+
+#toggle:checked~label {
+    background: rgba(255, 255, 255, 0.65);
+}
+
+
+/*Responsive*/
+
+@media only screen and (max-width: 768px) {
+    .menu {
+        background: #ffffff;
+        border-style: solid;
+        border-width: 0px 0px 1px 0px;
+        border-color: #ccc;
+    }
+    .menu .drop {
+        display: inline-block;
+    }
+    /*volvemos a mostrar el botÃ³n*/
+    .menu nav {
+        /*ahora nuestro menÃº es una lista flotante*/
+        /* text-align: right; */
+        position: absolute;
+        text-align: center;
+        z-index: 600;
+        background: #ffffff;
+        min-width: 20rem;
+        display: none;
+        /* top: 100%; */
+        /* right: 0%; */
+        border: solid 1px #ccc;
+    }
+    .menu nav>a {
+        /*y los Ã­tems se alinean verticalmente*/
+        float: none;
+        border: 0 none;
+    }
+}
+
+
+/*ocultamos el input*/
+
+#toggle:checked~nav {
+    display: block;
+}
+
+#toggle:checked~label {
+    background: rgba(255, 255, 255, 0.65);
+}
+
+
+/*--------------------
+/*Ceacion de las cars
+----------------------
+*/
+
+
+/*Botton*/
+
+.myButton {
+    display: inline-block;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 10px;
+    line-height: 1.5;
+    border-radius: .5rem;
+    color: #fff;
+    background-color: #f99b2c;
+    border-color: #f99b2c;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 12px;
+}
+
+a {
+    text-decoration: none;
+}
+
+hr {
+    box-sizing: content-box;
+    height: 0;
+    overflow: visible;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, .1)
+}
+
+
+/* Caja que almacena todo el contenido del contenido del html*/
+
+.caja {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto
+}
+
+
+/*nivel para llenar la caja*/
+
+.nivel {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px
+}
+
+
+/* Responive para diferentes medidas de pantalla para el contenido de html */
+
+@media (min-width:576px) {
+    .caja {
+        max-width: 540px
+    }
+}
+
+@media (min-width:768px) {
+    .caja {
+        max-width: 720px
+    }
+}
+
+@media (min-width:992px) {
+    .caja {
+        max-width: 960px
+    }
+}
+
+@media (min-width:1200px) {
+    .caja {
+        max-width: 1140px
+    }
+}
+
+
+/*-----------------------
+Buscador 
+---------------------------
+*/
+
+.search {
+    border: 2px solid #f99b2c;
+    overflow: auto;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.search input[type="text"] {
+    border: 0px;
+    width: 67%;
+    padding: 10px 10px;
+}
+
+.search input[type="text"]:focus {
+    outline: 0;
+}
+
+.search input[type="submit"] {
+    border: 0px;
+    background: none;
+    background-color: #f99b2c;
+    color: #fff;
+    float: right;
+    padding: 10px;
+    -border-radius-top-right: 5px;
+    -moz-border-radius-top-right: 5px;
+    -webkit-border-radius-top-right: 5px;
+    -border-radius-bottom-right: 5px;
+    -moz-border-radius-bottom-right: 5px;
+    -webkit-border-radius-bottom-right: 5px;
+    cursor: pointer;
+}
+
+@media only screen and (min-width: 150px) and (max-width: 780px) {
+    .search {
+        width: 95%;
+        margin: 0 auto;
+    }
+    h4 {
+        text-align: center;
+    }
+}
+
+
+/*Responsive*/
+
+.grande-4,
+.grande-6,
+.pequeno-12,
+.pequeno-4,
+.pequeno-6,
+.extra-pequeño-4,
+.extra-pequeño-6,
+.medio-12,
+.medio-4,
+.medio-6 {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+@media (min-width:768px) {
+    .medio-4 {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%
+    }
+    .medio-6 {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%
+    }
+    .medio-12 {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%
+    }
+}
+
+@media (min-width:576px) {
+    .pequeno-4 {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%
+    }
+    .pequeno-6 {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%
+    }
+    .pequeno-12 {
+        -ms-flex: 0 0 100%;
+        flex: 0 0 100%;
+        max-width: 100%
+    }
+}
+
+@media (min-width:992px) {
+    .grande-4 {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%
+    }
+    .grande-6 {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%
+    }
+}
+
+@media (min-width:1200px) {
+    .extra-pequeño-4 {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%
+    }
+    .extra-pequeño-6 {
+        -ms-flex: 0 0 50%;
+        flex: 0 0 50%;
+        max-width: 50%
+    }
+}
+
+.carta {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    word-wrap: break-word;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: .5rem
+}
+
+.carta>hr {
+    margin-right: 0;
+    margin-left: 0
+}
+
+.carta-cuerpo {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem
+}
+
+.carta-title {
+    margin-bottom: .75rem
+}
+
+.carta-cabecera {
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0, 0, 0, .03);
+    border-bottom: 1px solid rgba(0, 0, 0, .125)
+}
+
+
+/*Color para saber si es impresa anulada o no impresa */
+
+
+/*Impresa*/
+
+.impresa {
+    background-color: rgba(145, 255, 0, 0.03);
+    border-bottom: 1px solid #28a745;
+}
+
+
+/*No Impresa*/
+
+.noImpresa {
+    background-color: rgba(245, 226, 6, 0.15);
+    border-bottom: 1px solid #f99b2c;
+}
+
+
+/*No Impresa*/
+
+.anulada {
+    background-color: rgba(255, 0, 0, 0.03);
+    border-bottom: 1px solid #dc3545;
+}
+
+.carta-footer {
+    text-align: center;
+    padding: .75rem 1.25rem;
+    border-top: 1px solid rgba(0, 0, 0, .125)
+}
+
+
+/*---------------- 
+Tabla  
+-----------------*/
+
+.tabla {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+    text-align: center;
+}
+
+.tabla td,
+.tabla th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6
+}
+
+.tabla thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6
+}
+
+.tabla-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar
+}
+
+
+/*-----------------
+ FORMULARIO
+ ----------------- */
+
+.cuadrado {
+    border: solid 1px #ccc;
+    padding: 10px;
+    background: #fddfbb;
+    border-bottom: 1px solid #f99b2c;
+}
+
+.formularioPrincipal {
+    display: block;
+    width: 100%;
+    height: calc(2.25rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #f99b2c;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out
+}
+
+@media screen and (prefers-reduced-motion:reduce) {
+    .formularioPrincipal {
+        transition: none
+    }
+}
+
+.grupoFormulario {
+    margin-bottom: 1rem
+}
+
+.formularioNivel {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -5px;
+    margin-left: -5px
+}
+
+.insertar {
+    display: inline-block;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 15px;
+    line-height: 1.5;
+    border-radius: .5rem;
+    color: #fff;
+    background-color: #f99b2c;
+    border-color: #f99b2c;
+}
+
+.button {
+    text-align: center
+}
+
+.class_div {
+    height: 300px;
+    overflow-y: scroll
+}
+
+.centro {
+    text-align: center;
+}
+
+input[type="text"]:disabled {
+    background: #dddddd;
+}
+
+.select {
+    display: block;
+    width: 100%;
+    height: 38px;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: rgb(85, 85, 85);
+    background-color: rgb(255, 255, 255);
+    background-image: none;
+    box-shadow: rgba(0, 0, 0, 0.075) 0px 1px 1px inset;
+    padding: 6px 12px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #f99b2c;
+    border-image: initial;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
