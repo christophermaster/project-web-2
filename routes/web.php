@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('factura/home');
 });
 
 Route::get('/crear/factura', function () {

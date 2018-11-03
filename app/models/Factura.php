@@ -20,7 +20,8 @@ class Factura extends Model
         'hora',
         'fecha_creacion',
         'fecha_modificacion',
-        'impresa'
+        'impresa',
+        'Anular'
     ];
     
     protected $guarded =[

@@ -10,6 +10,10 @@ ESTILO GENERAL
     font-family: 'Roboto', sans-serif;
 }
 
+body {
+    background-color: #ffffff !important;
+}
+
 
 /*/-----------------
 CREACION DEL MENU
@@ -161,6 +165,7 @@ header {
     border-radius: .5rem;
     color: #fff;
     background-color: #f99b2c;
+    cursor: pointer;
     border-color: #f99b2c;
 }
 
@@ -519,6 +524,7 @@ Tabla
     color: #fff;
     background-color: #f99b2c;
     border-color: #f99b2c;
+    cursor: pointer;
 }
 
 .button {
@@ -555,4 +561,10 @@ input[type="text"]:disabled {
     border-image: initial;
     border-radius: 4px;
     transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #f99b2c !important;
+    border-color: #f99b2c !important;
 }

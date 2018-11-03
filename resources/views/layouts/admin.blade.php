@@ -9,9 +9,26 @@
     <link rel="stylesheet" type="text/css" media="screen" href="{{asset('css/estilos.css')}}" />
     <link href="{{url('https://fonts.googleapis.com/css?family=Roboto')}}" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{{asset('js/jQuery-2.1.4.min.js')}}"></script>
+    <!-- CSRF Token -->
+
+    <title>ADVentas</title>
+   <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{{asset('css/font-awesome.css')}}">
+    
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+ 
 </head>
 
-<body>
+<body >
+  
     <header class="menu">
         <input id="toggle" type="checkbox" />
         <label for="toggle" class="drop">
@@ -20,8 +37,9 @@
             </svg>
         </label>
         <nav>
-            <a href="{{url('almacen/categoria/create')}}">Facturar</a>
-            <a href="listaFactura.html">Lista de Factura</a>
+            <a href="{{url('/')}}">Inicio</a>
+            <a href="{{url('app/factura/create')}}">Facturar</a>
+            <a href="{{url('app/factura')}}">Lista de Factura</a>
         </nav>
 
     </header>
@@ -33,7 +51,9 @@
     <!--Fin Contenido-->
 
 </body>
+@stack('scripts')
+<script>
 
-<script src="{{asset('js/jQuery-2.1.4.min.js')}}"></script>
-@stack('scripts');
+</script>
+
 </html>

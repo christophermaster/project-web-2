@@ -20,6 +20,8 @@ class Gasto extends Model
         'precio_prducto',
         'cantidad',
         'precio_total_producto',
+        'precio_iva',
+        'precio_unitario'
     ];
     
     protected $guarded =[

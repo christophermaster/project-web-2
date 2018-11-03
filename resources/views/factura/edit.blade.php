@@ -1,6 +1,6 @@
 @extends ('layouts.admin')
 @section ('contenido')
-   <div class="caja" >
+    <div class="caja" >
         <div class="nivel">
             <a href = "{{ URL::previous() }}">
                 <button class="myButton"><i class="fa fa-long-arrow-left"></i>  Atras</button>
@@ -9,7 +9,7 @@
     </div>
     <div class="caja">
         <div class="grupoFormulario medio-12 centro">
-            <h2>Crear Factura</h2>
+            <h2>Editar Factura</h2>
         </div>
         <hr>
         <br>
@@ -18,33 +18,33 @@
                 Factura
             </div>
             <div class="extra-pequeño-4 pequeno-4 medio-4 grande-4 centro">
-                Nº {{$numero}}
+                Nº {{$factura->id}}
             </div>
             <div class="extra-pequeño-4 pequeno-4 medio-4 grande-4 centro">
-                {{$hoy}}
+                {{$factura->fecha_creacion}}
             </div>
 
         </div>
 
         <hr>
-{!!Form::open(array('url'=>'app/factura','method'=>'POST','autocomplete'=>'off'))!!}
-{{Form::token()}}
+	{!!Form::model($factura,['method'=>'PATCH','route'=>['factura.update',$factura->id]])!!}
+	{{Form::token()}}
         <div class="cuadrado">
             <div class="formularioNivel">
                 <div class="grupoFormulario medio-4">
                     <label for="inputEmail4">Nombre</label>
-                    <input type="nombre" name ="nombre" class="formularioPrincipal" 
-                    id="inputEmail4" placeholder="Nombre" required>
+                    <input type="text" name ="nombre" class="formularioPrincipal" 
+                    id="inputEmail4" placeholder="Nombre" required value="{{$factura->nombre}}" readonly >
                 </div>
                 <div class="grupoFormulario medio-4">
                     <label for="inputPassword4">Apellido</label>
                     <input type="text"  name ="apellido" class="formularioPrincipal" 
-                    id="inputPassword4" placeholder="Apellido" required>
+                    id="inputPassword4" placeholder="Apellido" required value="{{$factura->apellido}}" readonly>
                 </div>
                 <div class="grupoFormulario medio-4">
                     <label for="inputAddress">Cedula</label>
-                    <input type="number" name ="cedula" class="formularioPrincipal" 
-                    id="inputAddress" placeholder="1234567" required>
+                    <input type="text" name ="cedula" class="formularioPrincipal" 
+                    id="inputAddress" placeholder="1234567" required value="{{$factura->cedula}}" readonly>
                 </div>
             </div>
         </div>
@@ -61,8 +61,30 @@
                     <th>12%IVA</th>
                     <th>Precio Total + 12%IVA</th>
                     <th>Acción</th>
-                </thead>
+				</thead>
+				
                 <tbody>
+                    @foreach($gastos as $indexKey =>$gasto)
+                   
+
+
+
+
+
+
+					<tr class ="selected" id="fila{{$indexKey}}">
+						<td><input type ="hidden" name="id_productoss[]" value ="{{$gasto->id_productos}}">{{$gasto->nombre_producto}}</td>
+                        <td><input type ="hidden" name="precio_ventas[]" value ="{{$gasto->precio_unitario}}">{{$gasto->precio_unitario}}</td>
+                        <td><input type ="hidden" name="cantidades[]" value ="{{$gasto->cantidad}}">{{$gasto->cantidad}}</td>
+                        <td><input type ="hidden" name="comentarios[]" value = "{{$gasto->concepto}}">{{$gasto->concepto}}</td>
+                        <td><input type ="hidden" name="sub_totales[]" value ="{{$gasto->precio_prducto}}">{{$gasto->precio_prducto}}</td>
+                        <td><input type ="hidden" name="ivas[]" value ="{{$gasto->precio_iva}}">{{$gasto->precio_iva}}</td>
+                        <td><input type ="hidden" name="totales_cobrar[]" value ="{{$gasto->precio_total_producto}}">{{$gasto->precio_total_producto}}</td>
+						<td>
+							<button type = "button" class= "btn btn-primary" onclick = "eliminar({{$indexKey}})">X</button>
+						</td>						
+					</tr>
+					@endforeach
                  
                 </tbody>
                 <thead>
@@ -81,16 +103,16 @@
                     <th></th>
                     <th></th>
                     <th>
-                        <h4 id="sub_total">S/. 0.00</h4> 
-                        <input type="hidden" name="sub_venta" id="subventa">
+                        <h4 id="sub_total">S/.{{$factura->sub_total}}</h4> 
+                        <input type="hidden" name="sub_venta" id="subventa" value ="{{$factura->total}}">
                     </th>
                     <th>
-                        <h4 id="iva">S/. 0.00</h4> 
-                        <input type="hidden" name="iva" id="_iva">
+                        <h4 id="iva">S/. {{$factura->total_impuesto}}</h4> 
+                        <input type="hidden" name="iva" id="_iva" value ="{{$factura->total}}">
                     </th>
                     <th>
-                        <h4 id="total_cobrar">S/. 0.00</h4> 
-                        <input type="hidden" name="total_cobrar" id="totalcobrar">
+                        <h4 id="total_cobrar">S/.{{$factura->total}}</h4> 
+                        <input type="hidden" name="total_cobrar" id="totalcobrar" value ="{{$factura->total}}">
                     </th>
                     <th></th>
                 </tfoot>
@@ -102,7 +124,7 @@
                 <div class="grupoFormulario medio-4">
                     <label for="inputPassword4">Producto</label>
                     <select name="id_producto" id="id_producto" class="select" data-live-search = "true">
-                        <option value="0">Seleccione Producto</option>
+                        <option value="0_0">Seleccione Producto</option>
                         @foreach($productos as $pro)
                         <option value="{{$pro->id}}_{{$pro->precio_unitario}}">{{$pro->nombre}}</option>
                         @endforeach
@@ -111,7 +133,7 @@
                 </div>
                 <div class="grupoFormulario medio-4">
                     <label for="inputPassword4">Precio Unitario</label>
-                    <input type="number" name="precio_unitario" id="precio_unitario" class="formularioPrincipal" placeholder="Cantidad" disabled>
+                    <input type="number" name="precio_unitario" id="precio_unitario" class="formularioPrincipal" placeholder="Cantidad" readonly>
                 </div>
                 <div class="grupoFormulario medio-4">
                     <label for="inputPassword4">Cantidad</label>
@@ -153,14 +175,11 @@
     <br><br><br>
     <div class="caja">
         <div class="nivel ce" id="guardar">
-        <input type="hidden" name="_token" value="{{csrf_token()}}">
             <div class="grupoFormulario medio-6 centro">
-                <button class="insertar" type="submit" >Guardar</button>
+                <button class="insertar" type="submit" >Actualizar</button>
             </div>
             <div class=" medio-6 centro">
-                <a href = "{{ URL::previous() }}">
-                    <button class="insertar">Cancelar</a>
-                </a>
+                <button href="" class="insertar" type ="reset">Cancelar</button>
             </div>
         </div>
     </div>
@@ -174,19 +193,37 @@
         });
     });
 
+    // declaracion de variable
     var cont = 0;
-    //lleva la suma total de toda las fila
-    sub_total = 0;
-    total_iva = 0;
-    total_cobrar = 0;
+    var sub_total = 0;
+    var total_iva = 0;
+    var total_cobrar = 0;
 
     //lleva la suma por fila 
     subtotal = [];
     iva = [];
     totalcobrar = [];
 
-    $("#guardar").hide();
+ 
     $("#id_producto").change(mostrarValores);
+
+    function inicializar(){
+        var a = <?=json_encode($gastos,JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS) ?>;
+        if(a.length > 0){
+            cont = a.length;
+            for(var i = 0; i < cont; i++ ){
+                
+                subtotal[i] = (a[i].cantidad*a[i].precio_unitario);
+                iva[i] = Math.round(subtotal[i] * 0.12);
+                totalcobrar[i] =  subtotal[i] + iva[i];
+
+                sub_total = sub_total + subtotal[i];
+                total_iva =  total_iva + iva[i];
+                total_cobrar = total_cobrar + totalcobrar[i];
+            }
+        }
+       
+	}
 
     function mostrarValores(){
         datosArticulo = document.getElementById('id_producto').value.split('_');
@@ -195,6 +232,10 @@
 
 
     function agregar(){
+
+        if(cont == 0){
+            inicializar()
+        }
         datosArticulo = document.getElementById('id_producto').value.split('_');
        
         idarticulo = datosArticulo[0];
@@ -204,8 +245,8 @@
         precio_venta = $("#precio_unitario").val(); 
      
         comentario = $("#concepto").val(); 
-        if(idarticulo != "" && idarticulo != "0" &&
-         cantidad != "" && cantidad > 0  && comentario != "" ){
+        if(idarticulo != "" && idarticulo != "0"  
+        && cantidad != "" && cantidad > 0  && comentario != "" ){
                      
             subtotal[cont] = (cantidad*precio_venta);
             iva[cont] = Math.round(subtotal[cont] * 0.12);
@@ -249,6 +290,7 @@
     }
 
     function evaluar(){
+
         if(total_cobrar > 0){
             $("#guardar").show();
         }else{
@@ -257,6 +299,9 @@
     }
 
     function eliminar(index){
+        if(cont == 0){
+            inicializar()
+        }
         sub_total = sub_total - subtotal[index];
         total_iva =  total_iva - iva[index];
         total_cobrar = total_cobrar - totalcobrar[index];
@@ -269,6 +314,7 @@
         $("#fila"+index).remove();
         evaluar();
     }
+
 </script>
 
 @endpush

@@ -23,6 +23,7 @@ class Facturas extends Migration
             $table->string('fecha_creacion'); //nombre de la Escuela de la universidad de carabob
             $table->string('fecha_modificacion'); //nombre de la Escuela de la universidad de carabob
             $table->boolean('impresa'); //nombre de la Escuela de la universidad de carabob
+            $table->boolean('Anular');
         });
         Schema::table('facturas', function($table){
             $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');

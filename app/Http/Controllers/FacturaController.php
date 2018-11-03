@@ -33,19 +33,14 @@ class FacturaController extends Controller
     {
         if ($request)
         {
-          /*  $query=trim($request->get('searchText'));
-            $ventas=DB::table('venta as v')
-            ->join('persona as p','v.idcliente','=','p.idpersona')
-            ->join('detalle_venta as dv','dv.idventa','=','dv.idventa')
-            ->select('v.idventa','v.fecha_hora','p.nombre','v.tipo_comprobante',
-            'v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado',
-            'v.total_venta')
-            ->where('v.num_comprobante','LIKE','%'.$query.'%')
-            ->orderBy('v.idventa','desc')
-            ->groupBy('v.idventa','v.fecha_hora','p.nombre','v.tipo_comprobante',
-            'v.serie_comprobante','v.num_comprobante','v.impuesto','v.estado','v.total_venta')
-            ->paginate(7);*/
-           return Redirect::to('app/factura/create');
+           $query=trim($request->get('searchText'));
+           $factura=DB::table('facturas as f')
+            ->join('clientes as c','f.id_cliente','=','c.id')
+            ->select('c.nombre as nombre','c.apellido as apellido','f.*')
+            ->where('c.nombre','LIKE','%'.$query.'%')
+            ->orderBy('f.id','desc')
+            ->get();
+          return view('factura.index',["factura"=>$factura,"searchText"=>$query]);
         }
     }
 
@@ -54,13 +49,17 @@ class FacturaController extends Controller
     {
         $productos=DB::table('productos as pro')->select('pro.*')->get();
         
-        $numero = DB::table('facturas as factura')
+        $numeros = DB::table('facturas as factura')
             ->select("factura.id")
             ->orderBy('factura.id','desc')
             ->get()
             ->first();
-       
-        $numero += 1;
+       if($numeros == null){
+         $numero = 1;
+       }else{
+        $numero = $numeros->id + 1;
+       }
+        
         $hoy = date('Y-m-d');
         
         return view("factura.create",["productos"=>$productos,"numero"=>$numero,"hoy"=>$hoy]);
@@ -72,16 +71,23 @@ class FacturaController extends Controller
             DB::beginTransaction();
             $cliente = new Cliente;
             $factura = new Factura;
-            $gasto = new Gasto;
+            
 
             $id = "";
             $hoy = date('Y-m-d');
+            $hora = date('h:i:s A');
+            
+            $cont = 0;
 
             $clientes = DB::table('clientes as cliente')
-            ->select("cliente.*")
+            ->select("cliente.id")
             ->where("cliente.cedula","=",$request->get("cedula"))
             ->get();
-            $id = $clientes->id;
+            if(count($clientes) != 0){
+               $client = $clientes->first();
+                $id = $client->id;
+            }
+            
 
             if(count($clientes) == 0){
                 $cliente->nombre = $request->get("nombre");
@@ -93,45 +99,45 @@ class FacturaController extends Controller
 
             $factura->id_cliente = $id;
             $factura->total = $request->get("total_cobrar");
-            $factura->total = $request->get("sub_venta");
-            $factura->total = $request->get("iva");
-            $factura->hora = $request->get("iva");
-            $factura->fechra_creacion = $request->get("iva");
-            $factura->fechra_modificacion = $request->get("iva");
+            $factura->sub_total = $request->get("sub_venta");
+            $factura->total_impuesto = $request->get("iva");
+            $factura->hora = $hora;
+            $factura->fecha_creacion = $hoy;
+            $factura->fecha_modificacion = $hoy;
+            $factura->Anular = 0;
+            if($request->get("imprimir") == 'Si'){
+                $factura->impresa = 1;
+            }else{
+                $factura->impresa = 0;
+            }
             
+            $factura->save();
 
+            $concepto =  $request->get("comentarios");
+            $id_producto = $request->get("id_productoss");
+            $precio_unitario = $request->get("precio_ventas");
+            $iva = $request->get("ivas");
+            $precio_prducto = $request->get("sub_totales");
+            $cantidad = $request->get("cantidades");
+            $precio_total_producto = $request->get("totales_cobrar");
+          
             
-           /* $venta = new Venta;
-
-            $venta->idcliente=$request->get('idcliente');
-            $venta->tipo_comprobante=$request->get('tipo_comprobante');
-            $venta->serie_comprobante=$request->get('serie_comprobante');
-            $venta->num_comprobante=$request->get('num_comprobante');
-            $venta->total_venta=$request->get('total_venta');
-            $mytime = Carbon::now('America/Bogota');
-            $venta->fecha_hora=$mytime->toDateTimeString();
-            $venta->impuesto = '19';
-            $venta->estado = 'A';
-            $venta->save();
-
-            $idarticulo = $request->get('idarticulo');
-            $cantidad = $request->get('cantidad');   
-            $descuento = $request->get('descuento');         
-            $precio_venta = $request->get('precio_venta');
-            
-
-            $cont = 0;
-
-            while ($cont<count($idarticulo)) {
-                $detalle=new DetalleVenta();
-                $detalle->idventa=$venta->idventa;
-                $detalle->idarticulo=$idarticulo[$cont];
-                $detalle->cantidad=$cantidad[$cont];
-                $detalle->descuento=$descuento[$cont];
-                $detalle->precio_venta=$precio_venta[$cont];
-                $detalle->save();
+            while ($cont < count($id_producto)) {
+                $gasto = new Gasto;
+                $productos = Producto::findOrFail($id_producto[$cont]);
+                $gasto->id_factura = $factura->id;
+                $gasto->concepto = $concepto[$cont];
+                $gasto->id_productos = $id_producto[$cont];
+                $gasto->nombre_producto = $productos->nombre;
+                $gasto->precio_prducto = $precio_prducto[$cont];
+                $gasto->precio_unitario = $precio_unitario[$cont];
+                $gasto->cantidad = $cantidad[$cont];
+                $gasto->precio_total_producto = $precio_total_producto[$cont];
+                $gasto->precio_iva = $iva[$cont];
+                $gasto-> save();
                 $cont=$cont+1;
-            }*/
+
+            }
 
             DB::commit();
         } catch (Exception $e) 
@@ -142,16 +148,164 @@ class FacturaController extends Controller
         return Redirect::to('app/factura/create');
     }
 
-    public function show(Request $request)
+    public function show($id)
     {
-       
+        $factura=DB::table('facturas as f')
+            ->join('clientes as c','f.id_cliente','=','c.id')
+            ->select('c.cedula as cedula','c.nombre as nombre','c.apellido as apellido','f.*')
+            ->where('f.id','=',$id)
+            ->get()->first();
+        $gastos=DB::table('gastos as g')
+        ->select('g.*')
+        ->where('g.id_factura','=',$id)
+        ->get();
+        return view("factura.show",["factura"=>$factura,"gastos"=>$gastos]);
+    }
+    public function edit($id){
+
+        $productos=DB::table('productos as pro')->select('pro.*')->get();
+
+        $factura=DB::table('facturas as f')
+            ->join('clientes as c','f.id_cliente','=','c.id')
+            ->select('c.cedula as cedula','c.nombre as nombre','c.apellido as apellido','f.*')
+            ->where('f.id','=',$id)
+            ->get()->first();
+        $gastos=DB::table('gastos as g')
+        ->select('g.*')
+        ->where('g.id_factura','=',$id)
+        ->get();
+        return view("factura.edit",["factura"=>$factura,"gastos"=>$gastos,"productos"=>$productos]);
+
+    }
+
+    public function update(Request $request, $id){
+
+        try {
+
+            DB::beginTransaction();
+            $factura = Factura::findOrFail($id);
+            
+            $hoy = date('Y-m-d');
+            $hora = date('h:i:s A');
+            $cont = 0;
+        
+            $factura->total = $request->get("total_cobrar");
+            $factura->sub_total = $request->get("sub_venta");
+            $factura->total_impuesto = $request->get("iva");
+            $factura->hora = $hora;
+            $factura->fecha_modificacion = $hoy;
+
+            if($request->get("imprimir") == 'Si'){
+                $factura->impresa = 1;
+            }else{
+                $factura->impresa = 0;
+            }
+
+            $factura->update();
+
+            $gastos=DB::table('gastos as g')
+            ->select('g.id as id')
+            ->where('g.id_factura','=',$id)
+            ->get();
+
+            while ($cont < count($gastos)){
+               
+                Gasto::destroy($gastos[$cont]->id);
+                $cont = $cont + 1;
+            }
+
+            $concepto =  $request->get("comentarios");
+            $id_producto = $request->get("id_productoss");
+            $precio_unitario = $request->get("precio_ventas");
+            $iva = $request->get("ivas");
+            $precio_prducto = $request->get("sub_totales");
+            $cantidad = $request->get("cantidades");
+            $precio_total_producto = $request->get("totales_cobrar");
+
+            $cont = 0;
+          
+            while ($cont < count($id_producto)) {
+                $gasto = new Gasto;
+                $productos = Producto::findOrFail($id_producto[$cont]);
+                $gasto->id_factura = $factura->id;
+                $gasto->concepto = $concepto[$cont];
+                $gasto->id_productos = $id_producto[$cont];
+                $gasto->nombre_producto = $productos->nombre;
+                $gasto->precio_prducto = $precio_prducto[$cont];
+                $gasto->precio_unitario = $precio_unitario[$cont];
+                $gasto->cantidad = $cantidad[$cont];
+                $gasto->precio_total_producto = $precio_total_producto[$cont];
+                $gasto->precio_iva = $iva[$cont];
+                $gasto-> save();
+                $cont=$cont+1;
+
+            }
+
+            DB::commit();
+        } catch (Exception $e) 
+        {
+            DB::rollback();
+        }
+
+        return Redirect::to('app/factura/'.$id);
+     
     }
 
     public function destroy($id)
     {
-        $venta= Venta::findOrFail($id);
-        $venta->Estado='C';
-        $venta->update();
-        return Redirect::to('ventas/venta');
+    
+         try {
+
+            DB::beginTransaction();
+            $factura = Factura::findOrFail($id);
+            $factura->Anular = 1;
+            $factura->update();
+
+            $hoy = date('Y-m-d');
+            $hora = date('h:i:s A');
+            $cont = 0;
+
+            $factura_nueva = new Factura();
+
+            $factura_nueva->id_cliente = $factura->id_cliente;
+            $factura_nueva->total = $factura->total;
+            $factura_nueva->sub_total = $factura->sub_total;
+            $factura_nueva->total_impuesto = $factura->total_impuesto;
+            $factura_nueva->hora = $factura->hora;
+            $factura_nueva->fecha_modificacion = $factura->fecha_modificacion;
+            $factura_nueva->fecha_creacion = $factura->fecha_creacion;
+            $factura_nueva->impresa = $factura->impresa;
+            $factura_nueva->Anular = 0;
+
+            $factura_nueva->save();
+
+            $gastos=DB::table('gastos as g')
+            ->select('g.*')
+            ->where('g.id_factura','=',$id)
+            ->get();
+
+            while ($cont < count($gastos)) {
+                $gasto = new Gasto;
+                $gasto->id_factura = $factura_nueva->id;
+                $gasto->concepto = $gastos[$cont]->concepto;
+                $gasto->id_productos = $gastos[$cont]->id_productos;
+                $gasto->nombre_producto = $gastos[$cont]->nombre_producto;
+                $gasto->precio_prducto = $gastos[$cont]->precio_prducto;
+                $gasto->precio_unitario = $gastos[$cont]->precio_unitario;
+                $gasto->cantidad = $gastos[$cont]->cantidad;
+                $gasto->precio_total_producto = $gastos[$cont]->precio_total_producto;
+                $gasto->precio_iva = $gastos[$cont]->precio_iva;
+                $gasto-> save();
+                $cont=$cont+1;
+
+            }
+
+            DB::commit();
+        } catch (Exception $e) 
+        {
+            DB::rollback();
+        }
+
+        return Redirect::to('app/factura/'.$factura_nueva->id.'/edit');
     }
 }
